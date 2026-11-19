@@ -102,3 +102,46 @@ erxes:
    Хүлээгдэж байна → Баталгаажсан → Бэлтгэж байна → Хүргэлтэд гарсан → Хүргэгдсэн, plus Цуцлагдсан.
 3. **Frontline → Forms → (order form) → Settings**: create a sales card in «Хүлээгдэж байна» for every submission.
    Staff move it to «Баталгаажсан» when the erxes invoice shows paid.
+
+## 1.5 Test order from cart to receipt
+
+**Verified on a local production build:** `npm run test:order -- http://127.0.0.1:3071` passes **29 checks** (empty
+cart, unknown product, sold out, more than the stock, quantity limit, the browser's price ignored, 6,000₮ fee, free
+above 50,000₮, countryside refused, district / khoroo / address, QPay accepted, transfer and unknown payments refused,
+phone, email, company registry, same checkout key → same reference, honeypot, payment check 400 / 503). Without erxes
+the order returns `503 not_configured`; the checkout then shows the phone number and keeps the cart. `--send` was
+**not run** (env vars not set). No payment was made.
+
+Steps for the real test (authorized credentials only):
+
+1. **Frontline → Forms → Create** «Вэбсайт захиалга» with fields Нэр, Утас, Имэйл, Захиалга; copy the form id and the
+   field ids into `ERXES_ORDER_FORM_ID` / `ERXES_ORDER_FIELD_IDS`. Set `ERXES_API_URL`, `ERXES_PAYMENT_IDS`. Redeploy.
+2. `npm run test:order -- https://<production url> --send`: one order, two items + delivery.
+3. Pay the invoice only with QPay's test merchant or with explicit authorization for a real charge; check that
+   `/order/<reference>` shows «Төлбөр төлөгдлөө», move the card, issue the eBarimt, mark delivered, void the test.
+
+## Permissions (erxes)
+
+- Staff who handle orders: Sales (cards), Forms (submissions), Payments (view invoices), eBarimt (issue).
+- Only the owner: Settings → Payments, Settings → eBarimt, product import.
+- The website uses only public erxes mutations; it needs no admin token.
+
+---
+
+## Open questions for Bukana Cosmetics
+
+1. **Payment**: on Zochil the QPay2 method is `disabled` and the payment rule is empty. Which QPay merchant should
+   erxes use? Is the order confirmed only after full QPay payment (the site assumes yes)? The Zochil SMS template
+   mentions bank accounts: should bank transfer be offered too?
+2. **Countryside**: the Zochil countryside switch is on, but the only delivery option is Ulaanbaatar. The site does not
+   take countryside orders online and points to the partner shops. Should it (fee, courier, bus)?
+3. **Delivery days / zone**: is there a day off (Sunday?) or an area limit inside Ulaanbaatar?
+4. **Partner shops**: the 28 shops on `/info#stores` come from old product texts. Is the list current? (Two Erdenet
+   shops share one phone; one Tengis plaza stall appeared as both «#84» and «2084».)
+5. **Free delivery threshold**: the site uses goods total **above** 50,000₮ (exactly 50,000₮ pays 6,000₮). Confirm.
+6. **Gift card** (100,000₮): how is it redeemed? The site sells it as a normal product.
+7. **Glue**: the FAQ says lashes come without glue, but the shop sells its own glue (2,000₮). The site suggests it on
+   lash pages. OK?
+8. **TIN / PosAPI** for eBarimt; the Zochil shop has no registry number.
+9. **Address** «Orkhon mall»: no opening hours are given; is pickup possible?
+10. **Domain**: point bukanacosmetics.mn at the new site when ready.
