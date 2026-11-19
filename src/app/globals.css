@@ -1,0 +1,536 @@
+@import "tailwindcss";
+
+/* «Blush Bubble»: the Bukana logo (a pink illustrated girl, script «Bukana») turned into a soft, cute shop.
+   Cotton-candy pink, lilac and peach on cream; pillowy rounded cards; slow morphing blobs, rising bubbles,
+   twinkling sparkles and lashes that flutter. Every animation stops for visitors who asked for reduced motion. */
+@theme {
+  --color-blush: #f2709c;
+  --color-blush-2: #ffdbe7;
+  --color-blush-3: #ffeef4;
+  --color-berry: #c2366b;
+  --color-berry-2: #94204f;
+  --color-lilac: #b79cf0;
+  --color-lilac-2: #efe7ff;
+  --color-peach: #ffc7a8;
+  --color-peach-2: #fff0e6;
+  --color-butter: #fff3c4;
+  --color-mint: #dcf5ea;
+  --color-mint-2: #1f7a55;
+  --color-cream: #fff9fa;
+  --color-ink: #5b2340;
+  --color-ink-2: #8a5570;
+  --color-ink-3: #b88aa1;
+  --color-line: #f6dbe5;
+
+  --font-display: var(--font-display), "Arial Rounded MT Bold", system-ui, sans-serif;
+  --font-body: var(--font-body), system-ui, sans-serif;
+  --font-hand: var(--font-hand), "Comic Sans MS", cursive;
+}
+
+/* soft blob that slowly changes shape */
+@keyframes morph {
+  0%,
+  100% {
+    border-radius: 58% 42% 46% 54% / 52% 44% 56% 48%;
+    transform: rotate(0) scale(1);
+  }
+  33% {
+    border-radius: 40% 60% 62% 38% / 46% 58% 42% 54%;
+    transform: rotate(8deg) scale(1.04);
+  }
+  66% {
+    border-radius: 52% 48% 36% 64% / 60% 40% 60% 40%;
+    transform: rotate(-6deg) scale(0.97);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-12px) rotate(calc(var(--r, 0deg) * -1));
+  }
+}
+@keyframes bubble {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(14px, -45vh) scale(1);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-10px, -95vh) scale(1.08);
+    opacity: 0;
+  }
+}
+@keyframes twinkle {
+  0%,
+  100% {
+    transform: scale(0.55) rotate(0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.1) rotate(45deg);
+    opacity: 1;
+  }
+}
+@keyframes beat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(1.18);
+  }
+  30% {
+    transform: scale(0.96);
+  }
+  45% {
+    transform: scale(1.1);
+  }
+}
+@keyframes pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+}
+/* lashes: a little flutter, like a wink */
+@keyframes flutter {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  30% {
+    transform: scaleY(0.55);
+  }
+  60% {
+    transform: scaleY(1.1);
+  }
+}
+/* the drawn eye opens, looks, and closes again */
+@keyframes blink {
+  0%,
+  8%,
+  92%,
+  100% {
+    transform: scaleY(0.06);
+  }
+  14%,
+  86% {
+    transform: scaleY(1);
+  }
+}
+@keyframes lid {
+  0%,
+  8%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+  14%,
+  86% {
+    opacity: 0;
+  }
+}
+@keyframes shine {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes heart-up {
+  0% {
+    transform: translate(-50%, 0) scale(0.4);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--x, 0px)), -70px) scale(1.1) rotate(var(--r, 0deg));
+    opacity: 0;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+  .grid > *,
+  .flex > * {
+    min-width: 0;
+  }
+  ::selection {
+    background: var(--color-blush-2);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-lilac);
+    outline-offset: 3px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 1220px;
+    margin-inline: auto;
+    padding-inline: 16px;
+  }
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 32px;
+    }
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+  .hand {
+    font-family: var(--font-hand);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .eyebrow {
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 12.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* pillow card: white, very round, a pink glow under it */
+  .card {
+    background: #fff;
+    border-radius: 30px;
+    box-shadow:
+      0 18px 40px -24px rgb(194 54 107 / 0.35),
+      0 0 0 1.5px var(--color-line);
+  }
+  .lift {
+    transition:
+      transform 0.45s cubic-bezier(0.3, 1.5, 0.5, 1),
+      box-shadow 0.45s;
+  }
+  .lift:hover {
+    transform: translateY(-6px) rotate(-0.6deg);
+    box-shadow:
+      0 30px 50px -26px rgb(194 54 107 / 0.5),
+      0 0 0 2px var(--color-blush-2);
+  }
+
+  /* wavy edge between sections: set --wave to the colour of the next section */
+  .wave-edge {
+    height: 36px;
+    margin-top: -1px;
+    background: var(--wave, #fff);
+    -webkit-mask: radial-gradient(22px 20px at 50% 36px, #000 98%, transparent) 0 0 / 44px 36px repeat-x;
+    mask: radial-gradient(22px 20px at 50% 36px, #000 98%, transparent) 0 0 / 44px 36px repeat-x;
+  }
+
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 50px;
+    padding: 0 1.5rem;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 15.5px;
+    white-space: nowrap;
+    transition:
+      transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1),
+      box-shadow 0.3s,
+      background-color 0.2s,
+      color 0.2s;
+    user-select: none;
+  }
+  .btn:hover {
+    transform: translateY(-3px) scale(1.02);
+  }
+  .btn:active {
+    transform: translateY(1px) scale(0.97);
+  }
+  .btn:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  /* soft glowing «pillow» button */
+  .btn-pink {
+    background: linear-gradient(180deg, #f689ad, var(--color-blush) 60%, #ea5f8e);
+    color: #fff;
+    box-shadow:
+      inset 0 2px 0 rgb(255 255 255 / 0.45),
+      inset 0 -3px 0 rgb(148 32 79 / 0.18),
+      0 14px 26px -12px rgb(242 112 156 / 0.9);
+  }
+  .btn-pink:hover {
+    box-shadow:
+      inset 0 2px 0 rgb(255 255 255 / 0.45),
+      inset 0 -3px 0 rgb(148 32 79 / 0.18),
+      0 18px 32px -10px rgb(242 112 156 / 0.95);
+  }
+  .btn-lilac {
+    background: linear-gradient(180deg, #c9b3f7, var(--color-lilac));
+    color: #fff;
+    box-shadow:
+      inset 0 2px 0 rgb(255 255 255 / 0.45),
+      0 14px 26px -12px rgb(150 110 230 / 0.9);
+  }
+  .btn-white {
+    background: #fff;
+    color: var(--color-ink);
+    box-shadow:
+      0 0 0 2px var(--color-blush-2) inset,
+      0 10px 22px -14px rgb(194 54 107 / 0.5);
+  }
+  .btn-white:hover {
+    box-shadow:
+      0 0 0 2px var(--color-blush) inset,
+      0 14px 26px -14px rgb(194 54 107 / 0.6);
+  }
+  .btn-ink {
+    background: var(--color-ink);
+    color: #fff;
+    box-shadow: 0 14px 26px -14px rgb(91 35 64 / 0.9);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 42px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 0 0 1.5px var(--color-line) inset;
+    font-weight: 700;
+    font-size: 14.5px;
+    white-space: nowrap;
+    transition:
+      background-color 0.2s,
+      box-shadow 0.2s,
+      color 0.2s,
+      transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+  }
+  .chip:hover {
+    box-shadow: 0 0 0 2px var(--color-blush) inset;
+    transform: translateY(-1px);
+  }
+  .chip[aria-checked="true"],
+  .chip[aria-current="true"],
+  .chip[aria-pressed="true"] {
+    background: var(--color-blush);
+    color: #fff;
+    box-shadow: 0 8px 18px -8px rgb(242 112 156 / 0.9);
+  }
+
+  .label {
+    display: block;
+    font-weight: 800;
+    font-size: 14.5px;
+  }
+  .field {
+    display: block;
+    width: 100%;
+    margin-top: 0.4rem;
+    min-height: 52px;
+    padding: 0.7rem 1.1rem;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 0 0 1.5px var(--color-line) inset;
+    font-family: var(--font-body);
+    font-size: 16px;
+    transition: box-shadow 0.2s;
+  }
+  .field:focus {
+    outline: none;
+    box-shadow:
+      0 0 0 2.5px var(--color-blush) inset,
+      0 0 0 6px var(--color-blush-3);
+  }
+  .field[aria-invalid="true"] {
+    box-shadow: 0 0 0 2.5px var(--color-berry) inset;
+  }
+
+  .blob {
+    animation: morph 14s ease-in-out infinite;
+    border-radius: 58% 42% 46% 54% / 52% 44% 56% 48%;
+  }
+  .bubble {
+    animation-name: bubble;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+  .twinkle {
+    animation: twinkle 2.6s ease-in-out infinite;
+  }
+  .float {
+    animation: float 5s ease-in-out infinite;
+  }
+  .beat {
+    animation: beat 1.6s ease-in-out infinite;
+  }
+  .pop-in {
+    animation: pop 0.55s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+  }
+  .rise {
+    animation: rise 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  }
+  .wiggle {
+    animation: wiggle 0.5s ease-in-out;
+  }
+  .shine {
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.6) 50%, transparent 70%) 0 0 / 200% 100% no-repeat;
+    animation: shine 3.4s ease-in-out infinite;
+  }
+  .marquee {
+    animation: marquee 38s linear infinite;
+  }
+  .heart-up {
+    animation: heart-up 0.9s ease-out forwards;
+  }
+
+  /* lashes: hairs flutter every few seconds; on cards they flutter on hover */
+  .lash-hairs {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+    animation: flutter 4.2s ease-in-out infinite;
+    animation-delay: 1.2s;
+  }
+  .flutter-hover .lash-hairs {
+    animation: none;
+  }
+  .flutter-hover:hover .lash-hairs {
+    animation: flutter 0.7s ease-in-out 2;
+  }
+  .lash-open .lash-eye {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: blink 5.5s ease-in-out infinite;
+  }
+  .lash-open .lash-lid {
+    animation: lid 5.5s ease-in-out infinite;
+  }
+  .lash-open .lash-hairs {
+    animation: none;
+  }
+
+  /* scroll reveal: <Reveal> adds .in when the block enters the screen (hidden only when JS runs: html.js) */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s cubic-bezier(0.2, 1.2, 0.3, 1);
+    transition-delay: var(--d, 0ms);
+  }
+  .js .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+  .no-bar {
+    scrollbar-width: none;
+  }
+  .no-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .prose-bk p + p {
+    margin-top: 0.7em;
+  }
+  /* dotted candy background */
+  .dots {
+    background-image: radial-gradient(var(--color-blush-2) 1.6px, transparent 1.8px);
+    background-size: 22px 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .bubble,
+  .heart-up {
+    display: none;
+  }
+  .lash-open .lash-eye,
+  .lash-open .lash-lid {
+    animation: none !important;
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
